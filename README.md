@@ -5,9 +5,10 @@ Converting inline citations in a Word document to Latex is not an easy task. Eve
 This repository contains the code of ref2tex package that automatically  converts inline citations (e.g. [1] or (Sahraoui et al. 2023)) to latex cite command (e.g. \cite{refkey2023}).
 
 Input:
-1-File that contains original text with inline citations 
-2-Text file that contains list of references (bibliography)
-3-Bibtex file that contains all bib entries of the references listed in bibliography file
+1. File that contains original text with inline citations (.txt or .tex, __NOT__ in .doc or .docx)
+2. Text file that contains list of references (bibliography)
+3. Bibtex file that contains all bib entries of the references listed in bibliography file
+
 Output:
 The original text where inline citations are replaced with \cite commands
 
@@ -22,7 +23,7 @@ If your source documents is in difference style, converting it to APA or IEEE st
 ## Usage
 You can directly run the script corresponding to the source citation style, for example, if the source document is using APA style:
 ```
-apa2tex.py -i sourceFile -r refsFile -b bibtexFile [-o OutputFile]
+python ieee2tex.py -i sourceFile -r refsFile -b bibtexFile [-o OutputFile]
 
 -i input file that contains orginal text with inline citations (e.g. [1] for IEEE or (Sahraoui et al. 2023) for APA)
 -r txt file that contains a list of references (bibliography)
@@ -31,7 +32,7 @@ apa2tex.py -i sourceFile -r refsFile -b bibtexFile [-o OutputFile]
 ```
 Example:
 ```
-apa2tex.py -i myFile.tex -r myRefs.txt -b mybib.bib
+python ieee2tex.py -i myFile.tex -r myRefs.txt -b mybib.bib
 ```
 
 ## Instalation
@@ -39,8 +40,9 @@ apa2tex.py -i myFile.tex -r myRefs.txt -b mybib.bib
 pip install ref2tex
 ```
 ```
-import apa2tex
-apa2tex('inputRefs.txt','inputFile.tex','bibFile.bib')
+import ref2tex.ieee2tex as ieee2tex
+ieee2tex.ieee2tex('inputRefs.txt','inputFile.tex','bibFile.bib','my_out_file.tex')
+
 ```
 
 ## Ongoing improvements

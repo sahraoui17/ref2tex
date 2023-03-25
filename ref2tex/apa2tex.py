@@ -1,14 +1,8 @@
 import re
 import bibtexparser
 from bibtexparser.bibdatabase import BibDatabase
-
-
-
-
-bib_database = BibDatabase()
-with open('refs.bib') as bibtex_file:
-    bib_database = bibtexparser.load(bibtex_file)
-
+import sys
+import getopt
 
 #take an inline citation (i.e. Saha et al. 2023) and find how the author name will be in the reference list accoring to APA, 
 def get_APA_author_name(citation):
@@ -22,7 +16,7 @@ def get_APA_author_name(citation):
 
 #given a file that contains a list of APA references, 
 def get_reference_line(referencesFile,firstAuthor):   
-    with open(referencesFile, "rt") as inputFile:
+    with open(referencesFile, "rt",encoding="utf-8") as inputFile:
         for line in inputFile:
             if line.startswith(firstAuthor):
                 return line
@@ -42,18 +36,22 @@ def parse_reference(referenceLine):#get apa ref as string and return [authors,ye
             #print('line:'+str(index)+' was not processed: '+ref)
 
 #given a reference number, get its title, and return the correspondng bib key
-def get_reference_key(referenceLine):
+def get_reference_key(referenceLine,bib_database):
     title=parse_reference(referenceLine)[2] #get the reference title
-    title=title.replace('’',"'")  #MS word have different ' with bib/txt.  ’ and ' are different
-    #print(title)
-    
+    title=title.replace('’',"'")  #MS word have different ' with bib/txt.  ’ and ' are different    
     return next(entry for entry in bib_database.entries if entry['title'][1:-1]==title)['ID']
 
 
 #read a document that contain inline citation in APA, i.e. (Saha et al. 2023) and relace it with tex citation command \cite{key_in_bib_file}
-def apa2tex(inputRefs,inputTexFile,outputTexFile='cited_tex.tex'):    
-    with open(inputTexFile, "rt") as inputFile:
-        with open(outputTexFile, "wt") as outputFile:
+def apa2tex(inputRefs,inputTexFile,bibFile,outputTexFile='cited_tex.tex'):    
+
+    bib_database = BibDatabase()
+    with open(bibFile,encoding="utf-8") as bibtex_file:
+        print(bibFile,bibtex_file)
+        bib_database = bibtexparser.load(bibtex_file)
+
+    with open(inputTexFile, "rt",encoding="utf-8") as inputFile:
+        with open(outputTexFile, "wt",encoding="utf-8") as outputFile:
             for line in inputFile:
                 citations= re.findall(r"\((?:[A-Z][A-Za-z\.\s\&'`-]+), (?:19|20)[0-9][0-9]\)",line)
                 for citation in citations:
@@ -61,26 +59,43 @@ def apa2tex(inputRefs,inputTexFile,outputTexFile='cited_tex.tex'):
                         #print(citation)
                         reference_line=get_reference_line(inputRefs,get_APA_author_name(citation[1:-1]))
                         #get_reference_key(ref[1:-1])
-                        line=line.replace(citation,'\cite{'+get_reference_key(reference_line)+'}')
+                        line=line.replace(citation,'\cite{'+get_reference_key(reference_line,bib_database)+'}')
                     except StopIteration:
                         print('reference not found')    
-                print(line)    
-                # #outputFile.write(line)
-
-apa2tex('inputRefs.txt','input.tex','someout')
-
-#print(get_reference_key('Mendu, S., Boukhechba, M., Baglione, A., Baee, S., Wu, C., & Barnes, L. (2019). SocialText: A Framework for Understanding the Relationship Between Digital Communication Patterns and Mental Health. 2019 IEEE 13th International Conference on Semantic Computing (ICSC), 428–433. '))
-
-#print(get_reference_key('Wongkoblap, A., Vadillo, M. A., & Curcin, V. (2019). Modeling Depression Symptoms from Social Network Data through Multiple Instance Learning. AMIA Joint Summits on Translational Science Proceedings. AMIA Joint Summits on Translational Science, 2019, 44–53. https://pubmed.ncbi.nlm.nih.gov/31258955'))
+                outputFile.write(line)
 
 
-# citations=['(T. Liu et al., 2022)', '(S. Li et al., 2020)', '(Hou et al., 2020)', '(Wongkoblap et al., 2019)', '(Mendu et al., 2019)', '(Wan et al., 2019)']
-# for citation in citations:
-#     print(get_APA_author_name(citation[1:-1]))
-
-#     with open('s.txt', "rt") as inputFile:
-#         for line in inputFile:
-#             if line.startswith(get_APA_author_name(citation[1:-1])):
-#                 print(line)
+def main(RefsFile,inputFile,bibFile,outputFile='cited_tex.tex'):
+    import os.path
     
-#"s.txt"
+    #check if refFile exists
+    if not os.path.isfile(RefsFile):
+        print(RefsFile,'does not exist')
+        sys.exit()    
+    #check if inputFile exists
+    if not os.path.isfile(inputFile):
+        print(inputFile,'does not exist')
+        sys.exit()
+    #check if bibFile exists 
+    if not os.path.isfile(bibFile):
+        print(bibFile,'does not exist')
+        sys.exit()
+    apa2tex(RefsFile,inputFile,bibFile,outputFile)
+    
+if __name__ == "__main__":
+
+    for opt, arg in getopt.getopt(sys.argv[1:],'r:b:i:o:',[])[0]:
+        print(opt,arg)
+        if opt=='-r':
+           RefsFile=arg
+        if opt=='-b':
+           bibFile=arg
+        if opt=='-i':
+           inputFile=arg
+        if opt=='-o':
+           outputFile=arg
+        
+    try:
+        main(RefsFile,inputFile,bibFile,outputFile)
+    except NameError:
+        main(RefsFile,inputFile,bibFile)

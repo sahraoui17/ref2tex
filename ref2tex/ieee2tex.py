@@ -55,7 +55,6 @@ def ieee2tex(inputRefs,inputTexFile,bibFile,outputTexFile='output_cited.tex'):
                 outputFile.write(line)
 
 
-
 def main(RefsFile,inputFile,bibFile,outputFile='cited_tex.tex'):
     import os.path
     
@@ -90,11 +89,3 @@ if __name__ == "__main__":
         main(RefsFile,inputFile,bibFile,outputFile)
     except NameError:
         main(RefsFile,inputFile,bibFile)
-
-
-     
-# #find citations in text
-# inputTexFile='../../input.tex'
-# referencesFile='../../inputRefs.txt'
-# bibFile='../../refs.bib'
-# main(referencesFile,inputTexFile,bibFile)
