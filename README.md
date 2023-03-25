@@ -42,7 +42,6 @@ import apa2tex
 apa2tex('inputRefs.txt','inputFile.tex','bibFile.bib')
 ```
 
-
 ## Ongoing improvements
 -bibtex entry generation, in case it is missing in the provided bibtex library.
 -Deep learning based reference identification (author,year,journal/conference ...etc.) rather than parsing
