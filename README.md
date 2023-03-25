@@ -13,8 +13,9 @@ The orginal text where inline citations are replaced with \cite commands
 
 ## Supported styles
 The following styles are supported:
--APA (which uses (AuthorName Year) format)
--IEEE (which uses ([number]) format)
+
+- APA (which uses (AuthorName Year) format)
+- IEEE (which uses ([number]) format)
 If your source documents is in difference style, convertying it to APA or IEEE styles should be straight forward using reference management software such as Mendeley or Endnote.
 
 ## Usage
@@ -43,9 +44,9 @@ apa2tex('inputRefs.txt','inputFile.tex','bibFile.bib')
 ```
 
 ## Ongoing improvements
--bibtex entry generation, in case it is missing in the provided bibtex library.
--Deep learning based reference identification (author,year,journal/conference ...etc.) rather than parsing
--provide a web-based service for online citation converting
+- bibtex entry generation, in case it is missing in the provided bibtex library.
+- Deep learning based reference identification (author,year,journal/conference ...etc.) rather than parsing
+- provide a web-based service for online citation converting
 
 ## Licence
 Licensed under the MIT license.
